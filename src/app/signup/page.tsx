@@ -1,9 +1,10 @@
-"use client"
 
 import Image from "next/image"
 import Link from "next/link"
 import styles from '../page.module.scss'
 import logoImg from '/public/logo.svg'
+import { api } from "@/services/api"
+import { redirect } from "next/navigation"
 
 export default function Signup(){
 
@@ -15,8 +16,20 @@ export default function Signup(){
     const password = formData.get('password')
 
     if( name === "" || email === "" || password === "" ){
+      console.log('Preencha todos os campos')
       return;
     }
+
+    try {
+      await api.post("/users", {
+        name,
+        email,
+        password
+      })
+    }catch(err){
+      console.log("error")
+    }
+    redirect("/")
   }
 
     return(
@@ -34,7 +47,7 @@ export default function Signup(){
       <form action={handleRegister}>
 
       <input 
-        type='name'
+        type='text'
         required
         name='name'
         placeholder='Digite seu nome'
